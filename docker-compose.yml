@@ -4,8 +4,27 @@ services:
   dev:
     image: node:14.16.1-alpine
     working_dir: /usr/src
+    environment:
+      DB_HOST: host.docker.internal
+      DB_USER: postgres
+      DB_PASS: admin
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3333:3333"
     volumes:
       - .:/usr/src
     command: ["/bin/sh"]
+  db:
+    image: postgres:13.2
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: admin
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
